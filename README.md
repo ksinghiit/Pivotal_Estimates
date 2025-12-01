@@ -1,11 +1,11 @@
-# 📘 Pivotal Based Inference
+# Pivotal Based Inference
 
 **Authors:**  
 *Kundan Singh¹, Yogesh Mani Tripathi², and Liang Wang³*
 
 ---
 
-## 📌 Shape–Scale Family (SSF) Distribution
+## Shape–Scale Family (SSF) Distribution
 
 Following Maswadah (2022), the probability density function (PDF) of the **shape–scale family (SSF)** is:
 
@@ -18,9 +18,9 @@ $$
 
 where:
 
-- \(g(x)\) is differentiable and increasing,  
-- \(g(0^+)=0\),  
-- \(g(x)\to\infty\) as \(x\to\infty\).
+- $g(x)$ is differentiable and increasing,  
+- $g(0^+)=0$,  
+- $g(x)\to\infty$ as $x\to\infty$.
 
 The cumulative distribution function (CDF) is:
 
@@ -42,11 +42,11 @@ $$
 \text{MTTF}(\alpha,\beta)=\int_0^\infty x f(x;\alpha,\beta)\,dx.
 $$
 
-➡️ Many well-known lifetime models (Weibull, Pareto, Lomax, Burr-XII, exponential, etc.) are special cases depending on the function \(g(x)\).
+Many well-known lifetime models (Weibull, Pareto, Lomax, Burr-XII, exponential, etc.) are special cases depending on the function $g(x)$.
 
 ---
 
-# 📌 Pivotal Quantities for Generalized Inference
+# Pivotal Quantities for Generalized Inference
 
 To construct generalized point estimators (GPEs) and generalized confidence intervals (GCIs) under **block progressive censoring**, the following pivotal quantities are used.
 
@@ -54,7 +54,7 @@ To construct generalized point estimators (GPEs) and generalized confidence inte
 
 ## **Theorem 1**
 
-For \(i = 1,2,\ldots,m\), define:
+For $i = 1,2,\ldots,m$, define:
 
 $$
 P^{\mathcal{X}_i}(\alpha)
@@ -82,20 +82,20 @@ $$
 
 Then:
 
-- \(P^{\mathcal{X}_i}(\alpha) \sim \chi^2_{2(s_i-1)}\),  
-- \(S^{\mathcal{X}_i}(\alpha,\beta_i) \sim \chi^2_{2s_i}\),  
+- $P^{\mathcal{X}_i}(\alpha) \sim \chi^2_{2(s_i-1)}$,  
+- $S^{\mathcal{X}_i}(\alpha,\beta_i) \sim \chi^2_{2s_i}$,  
 - They are statistically **independent**.
 
 ---
 
 ## **Theorem 2**
 
-For each \(i = 1,2,\dots,m\), the pivotal quantity  
-\(P^{\mathcal{X}_i}(\alpha)\) is **increasing in \(\alpha\)**.
+For each $i = 1,2,\dots,m$, the pivotal quantity  
+$P^{\mathcal{X}_i}(\alpha)$ is **increasing in $\alpha$**.
 
 ---
 
-# 📌 Combined Pivotal Quantity
+# Combined Pivotal Quantity
 
 Define:
 
@@ -109,7 +109,7 @@ $$
 P(\alpha) \sim \chi^2_{2\sum_{i=1}^{m}(s_i-1)}.
 $$
 
-Because \(P(\alpha)\) is monotone increasing in \(\alpha\), the equation
+Because $P(\alpha)$ is monotone increasing in $\alpha$, the equation
 
 $$
 P(\alpha)=\alpha^*, \qquad 
@@ -122,7 +122,7 @@ $$
 \alpha = h(\alpha^*,T).
 $$
 
-For each \(i\):
+For each $i$:
 
 $$
 \beta_i=\frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(\alpha)},
@@ -138,7 +138,7 @@ G^{\mathcal{X}_i}(\alpha)
 \right].
 $$
 
-Thus the generalized pivotal quantity for \(\beta_i\) is:
+Thus the generalized pivotal quantity for $\beta_i$ is:
 
 $$
 \frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(h(\alpha^*,T))}.
@@ -146,20 +146,20 @@ $$
 
 ---
 
-# 📌 Algorithm for Generalized Estimation
+# Algorithm for Generalized Estimation
 
 ### **Algorithm**
 
-1. **Initialize** \(t = 1\).
+1. **Initialize** $t = 1$.
 
-2. **Simulate \(\alpha\):**
+2. **Simulate $\alpha$:**
 
-   - Draw \(\alpha^* \sim \chi^2_{2\sum_{i=1}^m(s_i-1)}\).  
-   - Solve \(P(\alpha)=\alpha^*\) to obtain \(\alpha^{(t)}\).
+   - Draw $\alpha^* \sim \chi^2_{2\sum_{i=1}^m(s_i-1)}$.  
+   - Solve $P(\alpha)=\alpha^*$ to obtain $\alpha^{(t)}$.
 
-3. **Simulate \(\beta_i\)**:
+3. **Simulate $\beta_i$**:
 
-   - Generate \(S^{\mathcal{X}_i} \sim \chi^2_{2s_i}\).  
+   - Generate $S^{\mathcal{X}_i} \sim \chi^2_{2s_i}$.  
    - Compute:
 
      $$
@@ -167,7 +167,7 @@ $$
      \frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(\alpha^{(t)})}.
      $$
 
-4. **Combine \(\beta_i\)** using inverse-variance weighting:
+4. **Combine $\beta_i$** using inverse-variance weighting:
 
 $$
 \beta^{(t)}
@@ -180,11 +180,11 @@ $$
 
 5. **Compute reliability measures**:
 
-- \(S(x_0;\alpha^{(t)},\beta^{(t)})\)  
-- \(H(x_0;\alpha^{(t)},\beta^{(t)})\)  
-- \(\text{MTTF}(\alpha^{(t)},\beta^{(t)})\)
+- $S(x_0;\alpha^{(t)},\beta^{(t)})$  
+- $H(x_0;\alpha^{(t)},\beta^{(t)})$  
+- $\text{MTTF}(\alpha^{(t)},\beta^{(t)})$
 
-6. **Repeat Steps 2–4** for \(N\) iterations to obtain:
+6. **Repeat Steps 2–4** for $N$ iterations to obtain:
 
 $$
 \zeta^{(1)}, \dots, \zeta^{(N)},
@@ -200,7 +200,7 @@ $$
      \zeta^{[1]} \le \cdots \le \zeta^{[N]}.
      $$
 
-   - For confidence level \(1-\xi\):
+   - For confidence level $1-\xi$:
 
      $$
      (\zeta^{[j]},\ \zeta^{[j + N - (\lfloor N\xi\rfloor+1)]}).
@@ -214,7 +214,7 @@ $$
 
 ---
 
-# 📚 References
+# References
 
 - Maswadah (2022). *Improved maximum likelihood estimation of the shape-scale family...*  
   **Journal of Applied Statistics**, 49(11), 2825–2844.
