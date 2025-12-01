@@ -1,93 +1,249 @@
-\title{Pivotal based inference}
- \author{Kundan Singh$^1$, Yogesh Mani Tripathi$^2$  and Liang Wang$^{3}$} 
+This is **fully ready for README.md or any Markdown file**.
 
-\maketitle \noindent 
- 
-{Following \citet{Maswadah2022}}, the probability density function (PDF) of  a shape-scale family (SSF) distribution is given by
-\begin{align}\label{eq1}
-    f(x;\alpha,\beta)=\alpha\beta (g(x))^{\alpha-1} g^{'}(x) \exp{\left\{-\beta (g(x))^{\alpha}\right\}},\ x>0. \alpha,\beta>0,
-\end{align}
-{where $g^{'}(x)=\frac{dg(x)}{dx}$, and function $g(x)$ is differentiable and increases in $x$ with} $g(0^+)=0$ and $g(x) \to +\infty$ as $x \to +\infty$. The cumulative distribution function (CDF) is 
-\begin{align}\label{eq2}
-    F(x;\alpha,\beta)=1-\exp{\left\{-\beta (g(x))^{\alpha}\right\}},\ \alpha, \beta>0, x>0,
-\end{align}
-where $\alpha>0$ and $\beta>0$ are shape and scale  {parameters, respectively. For simplicity, this model is denoted as SSF$(\alpha,\beta)$}. 
-Also, the survival function (RF) $S(\cdot)$, hazard rate function (HRF) $H(\cdot)$ and the mean time to failure (MDTF) of this family are expressed as {
-\begin{align}\label{eq3}
-\aligned
-S(x;\alpha,\beta)&= \exp{\left\{-\beta (g(x))^{\alpha}\right\}},\\
-H(x;\alpha,\beta)&=\alpha\beta (g(x))^{\alpha-1} g^{'}(x), \\
-   MDTF(\alpha,\beta)&=\int_X xf(x;\alpha,\beta)dx.
-\endaligned
-\end{align}}
- {For clarity, is is noted that some well-known} lifetime distributions like exponential, Weibull, modified Weibull, Pareto, generalized Pareto, Lomax, Burr-type-XII, and unit inverse Weibull belong to this family according to  different expressions of $(g(x))^\alpha$.
- \\
- For constructing generalized point estimators (GPEs) and generalized confidence intervals (GCIs) for model parameters and reliability indices under block progressive censoring, the following pivotal quantities are proposed first
+---
 
-\begin{theorem}\label{thm4.1}
-For $i=1,2,\ldots,m$, quantities 
-\begin{align*}
-    P^{\mathcal{X}_i}(\alpha)=2 \sum_{j=1}^{s_i-1}\ln\left[\frac{\sum_{r=1}^{s_i-1}(R_{ir}+1)(g(X_{ir}))^\alpha+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)(g(X_{is_i}))^\alpha}{\sum_{r=1}^{j-1}(R_{ir}+1)(g(X_{ir}))^\alpha+\left(n_i-\sum_{r=1}^{j-1}(R_{ir}+1)\right)(g(X_{ij}))^\alpha}\right],
-\end{align*}
+# 📘 **Pivotal Based Inference**
+
+**Authors:**
+*Kundan Singh¹, Yogesh Mani Tripathi², and Liang Wang³*
+
+---
+
+## 📌 Shape–Scale Family (SSF) Distribution
+
+Following Maswadah (2022), the probability density function (PDF) of the **shape–scale family (SSF)** is
+
+[
+f(x;\alpha,\beta)
+= \alpha\beta, [g(x)]^{\alpha-1}, g'(x),
+\exp\left{-\beta [g(x)]^\alpha\right},
+\qquad x>0,\ \alpha,\beta>0,
+]
+
+where:
+
+* (g(x)) is differentiable, increasing,
+* (g(0^+)=0),
+* (g(x)\to\infty) as (x\to\infty).
+
+The cumulative distribution function (CDF) is:
+
+[
+F(x;\alpha,\beta)=1 - \exp\left{-\beta [g(x)]^\alpha\right}.
+]
+
+The survival function (SF), hazard rate function (HRF), and mean time to failure (MTTF) are:
+
+[
+S(x;\alpha,\beta)=\exp{-\beta[g(x)]^\alpha},
+]
+
+[
+H(x;\alpha,\beta)=\alpha\beta[g(x)]^{\alpha-1}g'(x),
+]
+
+[
+\text{MTTF}(\alpha,\beta)=\int_0^\infty x f(x;\alpha,\beta),dx.
+]
+
+➡️ Several well-known lifetime models (Weibull, Pareto, Lomax, Burr-XII, exponential, etc.) are special cases depending on the form of (g(x)).
+
+---
+
+# 📌 **Pivotal Quantities for Generalized Inference**
+
+To construct generalized point estimators (GPEs) and generalized confidence intervals (GCIs) under **block progressive censoring**, consider the following pivotal quantities.
+
+---
+
+## **Theorem 1**
+
+For (i = 1,2,\ldots,m), define:
+
+[
+P^{\mathcal{X}*i}(\alpha)
+= 2 \sum*{j=1}^{s_i-1}
+\ln\left[
+\frac{
+\sum_{r=1}^{s_i-1}(R_{ir}+1)[g(X_{ir})]^\alpha +
+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)[g(X_{is_i})]^\alpha
+}{
+\sum_{r=1}^{j-1}(R_{ir}+1)[g(X_{ir})]^\alpha +
+\left(n_i-\sum_{r=1}^{j-1}(R_{ir}+1)\right)[g(X_{ij})]^\alpha
+}
+\right],
+]
+
 and
-\begin{align*}
-S^{\mathcal{X}_i}(\alpha,\beta_i)=2\beta_i\left[\sum_{r=1}^{s_i-1}(R_{ir}+1)(g(X_{ir}))^\alpha+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)(g(X_{is_i}))^\alpha\right],
-\end{align*}
-have chi-square distributions with $2(s_i-1)$ and $2s_i$ degrees of freedom respectively, and they are statistically independent.
-\end{theorem}
 
-\begin{theorem}\label{thm4.2}
-    For each $i=1,2,\dots,m$, the pivotal quantity $P^{\mathcal{X}_i}(\alpha)$  {increases} in $\alpha$.
-\end{theorem}
+[
+S^{\mathcal{X}*i}(\alpha,\beta_i)
+=2\beta_i\left[
+\sum*{r=1}^{s_i-1}(R_{ir}+1)[g(X_{ir})]^\alpha +
+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)[g(X_{is_i})]^\alpha
+\right].
+]
 
-Now, consider the pivotal quantity
-\begin{align}
-    P(\alpha)=&\sum_{i=1}^{m}P^{\mathcal{X}_i}(\alpha)\nonumber\\
-    =& ~2 \sum_{i=1}^{m}\sum_{j=1}^{s_i-1}\ln\left[\frac{\sum_{r=1}^{s_i-1}(R_{ir}+1)(g(X_{ir}))^\alpha+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)(g(X_{is_i}))^\alpha}{\sum_{r=1}^{j-1}(R_{ir}+1)(g(X_{ir}))^\alpha+\left(n_i-\sum_{r=1}^{j-1}(R_{ir}+1)\right)(g(X_{ij}))^\alpha}\right].    
-\end{align}
-Since $P^{\mathcal{X}_i}(\alpha)$ are independent from one another for $i=1,2,\dots,m$. So $P(\alpha)$ has a chi-square distribution with degree of freedom $2\sum_{i=1}^{m}(s_i-1)$. Also,  {using Theorem \ref{thm4.2}, it is observed that quantity $P(\alpha)$ increases in $\alpha$}.
+Then:
 
-Note that $P(\alpha)=\alpha^*$ has a unique solution for $\alpha^*\sim \chi^2_{2\sum_{i=1}^{m}(s_i-1)}$, denoted as $h(\alpha^*,T)$. Moreover, $\beta_i$ can be written as
-\begin{align}
-   \beta_i=\frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(\alpha)}, i=1,2,\dots,m,
-\end{align}
-where $G^{\mathcal{X}_i}(\alpha)=2\Big[\sum_{r=1}^{s_i-1}(R_{ir}+1)(g(X_{ir}))^\alpha+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)(g(X_{is_i}))^\alpha\Big]$. Then the generalized pivotal quantity for $\beta_i,\ i=1,2\dots,m$, can be obtained as $\frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(g(\alpha^{*},T))}$ (see, \citet{Weerahandi2004}). Based on these generalized pivotal quantities, an algorithm is proposed next, which is useful for obtaining estimates for reliability and DDF characteristics.
+* (P^{\mathcal{X}*i}(\alpha) \sim \chi^2*{2(s_i-1)}),
+* (S^{\mathcal{X}*i}(\alpha,\beta_i) \sim \chi^2*{2s_i}),
+* they are **independent**.
 
-\textbf{Algorithm:}
-\begin{itemize}[noitemsep]
-    \item[Step 1.] Set $t=1$.
-    \item[Step 2.] Generate $\alpha^*$ from $\chi^2_{2\sum_{i=1}^{m}(s_i-1)}$ distribution, and obtained $\alpha^{(t)}$ by solving $P(\alpha)=\alpha^*$.
-    \item[Step 3.] For each $i=1,2.\dots,m$, generate $S^{\mathcal{X}_i}$ form $\chi^2_{2s_i}$ distribution and get an observation $\beta_i^{(t)}$ for $\beta_i$ using $\beta_i^{(t)}=\frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(\alpha^t)}$.
-    \item[Step 4.] Compute $\beta^{(t)}=\frac{\sum_{i=1}^{m}\frac{1}{Var(\beta_i)}\beta_i^t}{\sum_{i=1}^{m}\frac{1}{Var(\beta_i)}}$, where $Var(\beta_i)=\frac{1}{t}\sum_{r=1}^{t}\left(\beta_i^{(r)}-\frac{1}{t}\sum_{r=1}^{t}\beta_i^{(r)}\right)^2$. Obtained the reliability indices $S(x_0;\alpha^{(t)},\beta^{(t)}),H(x_0;\alpha^{(t)},\beta^{(t)})$ and MDTF$(\alpha^{(t)},\beta^{(t)})$.
-    
-  \item[Step 5.] Repeat Steps $2$ and $4,$ $\mathcal{N}$ times, one can obtain $\mathcal{N}$ values of $\zeta=\{\alpha,\mathbf{B}, \beta, S(x_0), H(x_0), MDTF\}$  as $\zeta^{(1)},\zeta^{(2)},\dots,\zeta^{(\mathcal{N})}$.
- 
-\item[Step 6.] To construct the generalized confidence interval (GCI) of $\zeta$, first arrange all estimates of $\zeta$ in an ascending order as $\zeta^{[1]},\zeta^{[2]},\dots,\zeta^{[N]}$. For arbitrary $0<\xi<1$, a $100(1-\xi)\%$ confidence interval of $\zeta$ can be obtained as
-\begin{eqnarray}
-\Big(\zeta^{[j]},\zeta^{[j+\mathcal{N}-[\mathcal{N}_{\xi}+1]]}\Big), j=1,2,\dots,[\mathcal{N}_{\xi}].\nonumber
-\end{eqnarray}
-where $[r]$ denotes the greatest integer less than or equal to $r$. Therefore, the $100(1-\xi)\%$ GCI of $\zeta$ can be constructed as the $j^*$th one satisfying
-\begin{eqnarray}
-\zeta^{[j+\mathcal{N}-[\mathcal{N}_{\xi}+1]]} -\zeta^{[j^*]}=\text{min}\big(\zeta^{[j+\mathcal{N}-[\mathcal{N}_{\xi}+1]]},\zeta^{[j]} \big).\nonumber
-\end{eqnarray}
-In addition, based on $\zeta^{(1)},\zeta^{(1)},\dots,\zeta^{(\mathcal{N})}$, a generalized point estimator for $\zeta$ is given by
-\begin{eqnarray}
-\widehat{\zeta} = \frac{1}{\mathcal{N}}\sum_{j=1}^{\mathcal{N}}\zeta^{(j)}.\nonumber
-\end{eqnarray}
-\end{itemize}
+---
 
+## **Theorem 2**
 
-\begin{thebibliography}{Yogesh}
+For each (i = 1,2,\dots,m),
+the pivotal quantity (P^{\mathcal{X}_i}(\alpha)) is **increasing in (\alpha)**.
 
-\bibitem[Maswadah(2022)]{Maswadah2022} Maswadah, M. (2022). Improved maximum likelihood estimation of the shape-scale family based on the generalized progressive hybrid censoring scheme. {\it Journal of Applied Statistics}, 49(11), 2825-2844.
+---
 
- 
-\bibitem[Weerahandi(2004)]{Weerahandi2004} Weerahandi, S. (2004). {\it Generalized inference in repeated measures: Exact methods in MANOVA and mixed models} (Vol. 500). John Wiley \& Sons.
+## 📌 Combined Pivotal Quantity
 
-\bibitem[Singh et al.(2023)]{Singh2023} Singh, K., Mahto, A. K., Tripathi, Y., \& Wang, L. (2023). Inference for reliability in a multicomponent stress-strength model for a unit inverse Weibull distribution under  {Type-II} censoring. {\it Quality Technology \& Quantitative Management}, 21(2), 147-176.
+Define:
 
-\bibitem[Singh et al.(2025)]{Singh2025}Singh, K., Tripathi, Y. M., Lodhi, C., \& Wang, L. (2024). Inference for unit inverse Weibull distribution under block progressive type-ii censoring. {\it Journal of Statistical Theory and Practice}, 18(3), 42.
-\end{thebibliography}
+[
+P(\alpha)=\sum_{i=1}^m P^{\mathcal{X}_i}(\alpha).
+]
 
+Since all components are independent:
 
-\end{document}
+[
+P(\alpha) \sim \chi^2_{2\sum_{i=1}^{m}(s_i-1)}.
+]
+
+Using Theorem 2, (P(\alpha)) is **monotone increasing in (\alpha)**, so the equation
+
+[
+P(\alpha)=\alpha^*
+\qquad\text{for}\qquad
+\alpha^* \sim \chi^2_{2\sum_{i=1}^{m}(s_i-1)}
+]
+
+has a **unique solution**, denoted:
+
+[
+\alpha = h(\alpha^*,T).
+]
+
+Further, for each (i):
+
+[
+\beta_i=\frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(\alpha)},
+]
+
+where
+
+[
+G^{\mathcal{X}*i}(\alpha)
+=2\left[
+\sum*{r=1}^{s_i-1}(R_{ir}+1)[g(X_{ir})]^\alpha +
+\left(n_i-\sum_{r=1}^{s_i-1}(R_{ir}+1)\right)[g(X_{is_i})]^\alpha
+\right].
+]
+
+Thus the generalized pivotal for (\beta_i) is:
+
+[
+\frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(h(\alpha^*,T))}.
+]
+
+---
+
+# 📌 **Algorithm for Generalized Estimation**
+
+### **Algorithm**
+
+1. **Initialize**: set (t = 1).
+
+2. **Simulate (\alpha)**
+
+   * Generate (\alpha^{*} \sim \chi^2_{2\sum_{i=1}^m(s_i-1)}).
+   * Solve (P(\alpha)=\alpha^{*}) to get (\alpha^{(t)}).
+
+3. **Simulate (\beta_i)** for each (i=1,2,\dots,m):
+
+   * Generate (S^{\mathcal{X}*i} \sim \chi^2*{2s_i}).
+   * Compute:
+
+     [
+     \beta_i^{(t)} =
+     \frac{S^{\mathcal{X}_i}}{G^{\mathcal{X}_i}(\alpha^{(t)})}.
+     ]
+
+4. **Combine (\beta_i)** using inverse variance weights:
+
+   [
+   \beta^{(t)}
+   = \frac{
+   \sum_{i=1}^m \beta_i^{(t)} / \mathrm{Var}(\beta_i)
+   }{
+   \sum_{i=1}^m 1 / \mathrm{Var}(\beta_i)
+   },
+   ]
+
+   where
+
+   [
+   \mathrm{Var}(\beta_i)
+   = \frac{1}{t}\sum_{r=1}^t
+   \left(\beta_i^{(r)}-\frac{1}{t}\sum_{r=1}^t\beta_i^{(r)}\right)^2.
+   ]
+
+   Compute reliability metrics:
+
+   * (S(x_0;\alpha^{(t)},\beta^{(t)}))
+   * (H(x_0;\alpha^{(t)},\beta^{(t)}))
+   * (\text{MTTF}(\alpha^{(t)},\beta^{(t)}))
+
+5. **Repeat Steps 2–4** for (N) iterations to obtain:
+
+   [
+   \zeta^{(1)}, \dots, \zeta^{(N)},
+   ]
+
+   where
+   (\zeta = {\alpha, \mathbf{B}, \beta, S(x_0), H(x_0), \text{MTTF}}).
+
+6. **Construct GCI**
+
+   * Sort the values:
+
+     [
+     \zeta^{[1]} \le \zeta^{[2]} \le \cdots \le \zeta^{[N]}.
+     ]
+
+   * For confidence level (1-\xi):
+
+     [
+     \big(\zeta^{[j]},\ \zeta^{[j + N - (\lfloor N\xi\rfloor+1)]}\big)
+     ]
+
+     and choose the interval with minimum width.
+
+7. **Generalized estimate**:
+
+   [
+   \widehat{\zeta} = \frac{1}{N} \sum_{j=1}^{N} \zeta^{(j)}.
+   ]
+
+---
+
+# 📚 **References**
+
+* Maswadah, M. (2022).
+  *Improved maximum likelihood estimation of the shape-scale family...*
+  *Journal of Applied Statistics*, 49(11), 2825–2844.
+
+* Weerahandi, S. (2004).
+  *Generalized Inference in Repeated Measures.*
+  Wiley.
+
+* Singh, K., Mahto, A. K., Tripathi, Y., & Wang, L. (2023).
+  *Inference for reliability in a multicomponent stress–strength model...*
+  *Quality Technology & Quantitative Management*, 21(2), 147–176.
+
+* Singh, K., Tripathi, Y. M., Lodhi, C., & Wang, L. (2024).
+  *Inference for unit inverse Weibull distribution under block progressive Type-II censoring.*
+  *Journal of Statistical Theory and Practice*, 18(3), 42.
