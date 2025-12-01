@@ -10,10 +10,7 @@
 Following Maswadah (2022), the probability density function (PDF) of the **shape–scale family (SSF)** is:
 
 $$
-f(x;\alpha,\beta)
-= \alpha\beta\,[g(x)]^{\alpha-1}\, g'(x)\,
-\exp\left\{-\beta [g(x)]^\alpha\right\},
-\qquad x>0,\ \alpha,\beta>0.
+ f(x;\alpha,\beta)=\alpha\beta (g(x))^{\alpha-1} g^{'}(x) \exp{\left\{-\beta (g(x))^{\alpha}\right\}},\ x>0. \alpha,\beta>0,
 $$
 
 where:
