@@ -251,5 +251,5 @@ pivotap <- function(aa, bb, rr, gt, mm, nn, xx0){
 }
 pvt_val <- pivotap(aa=1, bb=2, rr=R, gt=x, mm=M, nn=N, xx0=x0);
 cat("Inference based on Pivotal Estimate...\n")
-print(pvt_val);
+print(pvt_val)
 
