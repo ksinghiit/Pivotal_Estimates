@@ -73,4 +73,5 @@ for(sm in 1:k){
 		R     = R[[sm]]
 	) + (rnorm(M[sm], 0, 0.001))
 }
-x <- smpl_list; x;
+x <- smpl_list; 
+x

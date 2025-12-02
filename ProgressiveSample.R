@@ -69,4 +69,4 @@ xsamp <- sam_generation_progressive(
   R     = R
 )
 
-xsamp;
+xsamp
