@@ -35,7 +35,7 @@ q_weibull <- function(u, alpha, beta) {
 # M : number of observed failures
 # R : censoring scheme vector of length M
 # -------------------------
-sam_generation_progressive <- function(qfunc, alpha, beta, N, M, R) {
+ProgressiveSample <- function(qfunc, alpha, beta, N, M, R) {
   
   if (length(R) != M) {
     stop("Length of R must be equal to M.")
@@ -68,7 +68,7 @@ sam_generation_progressive <- function(qfunc, alpha, beta, N, M, R) {
 
 smpl_list <- list()
 for(sm in 1:k){
-  smpl_list[[sm]] <- sam_generation_progressive(
+  smpl_list[[sm]] <- ProgressiveSample(
     qfunc = q_weibull,
     alpha = alp,
     beta  = bet,
