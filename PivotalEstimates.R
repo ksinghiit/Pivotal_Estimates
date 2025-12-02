@@ -1,4 +1,3 @@
-rm(list=ls(all=T))
 rm(list=ls(all=TRUE))
 
 n <- 100 #sample slize
