@@ -1,9 +1,4 @@
-rm(list=ls(all=T))
 rm(list=ls(all=TRUE))
-start.time <- Sys.time()
-library(nleqslv);
-library(NLRoot);
-
 
 n <- 100 #sample slize
 N <- c(40, 33, 27) # n1, n2, n3 ...each block sample size
