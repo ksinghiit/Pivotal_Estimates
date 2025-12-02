@@ -1,9 +1,5 @@
 rm(list=ls(all=T))
 rm(list=ls(all=TRUE))
-start.time <- Sys.time()
-library(nleqslv);
-library(NLRoot);
-
 
 n <- 100 #sample slize
 N <- c(40, 33, 27) # n1, n2, n3 ...each block sample size
@@ -13,12 +9,9 @@ k <- length(M) #Block size
 #Initial Value of Parameters
 alp <- 1.7; bet <- 1.5;
 
-x0=2; #time point to get relaibility value
 
-N0=100; NN=200; #to iterate the pivotal estimates
-
-los=0.05 #significance level
-
+NN=2000; #Total generate the pivotal estimates 
+N0=1000; #Consider the burn in obtained initial pivotal estimates 
 
 #Defined Censoring Schemes
 R <- list()
@@ -26,62 +19,75 @@ for(r in 1:k){
   R[[r]] <- c(rep(0,(M[r]-1)),(N[r]-M[r])) # Censoring Schemes
 }
 
-## Sample generation for progressive censored data from Weibull Distribution
-sam_generation_progressive <- function(nn, mm,al, bt,RR){
-  ww <- runif(mm);
-  vv <- numeric(0);
-  ui <- numeric(0);
-  for(i1 in 1:mm){
-    vv[i1] <- (ww[i1])^(1/(i1 + sum(RR[(mm-i1+1):mm])));
-  }
-  for(i2 in 1:mm){
-    ui[i2] <- 1-prod(vv[(mm-i2+1):mm]);
-  }
-  xs <- ((-1/bt)*log(1-ui))^(1/al); #quantile of Weibull distribution
-  #xs <- log(1+(((-1/bt)*log(1-ui))^(1/al))); #quantile of Modified Weibull distribution
-  return(xs);
+# -------------------------
+# Weibull quantile function
+# F^{-1}(u) = [ -log(1-u) / beta ]^{1/alpha}
+# -------------------------
+q_weibull <- function(u, alpha, beta) {
+  ((-log(1 - u)) / beta)^(1 / alpha)
 }
-#xsamp <- sam_generation_progressive(N[1],M[1], alp, bet, R[[1]]);xsamp; # sample for progressive censoring
 
-#...Generate sample for  Block progressive censoring
+# -------------------------
+# Progressive censored sample generator
+# qfunc : quantile function F^{-1}(u, alpha, beta)
+# alpha, beta : parameters
+# N : total sample size (not directly used but included for clarity)
+# M : number of observed failures
+# R : censoring scheme vector of length M
+# -------------------------
+sam_generation_progressive <- function(qfunc, alpha, beta, N, M, R) {
+  
+  if (length(R) != M) {
+    stop("Length of R must be equal to M.")
+  }
+  
+  # Step 1: generate uniform variables
+  w  <- runif(M)
+  v  <- numeric(M)
+  u  <- numeric(M)
+  
+  # Step 2: construct v_i as in the progressive censoring algorithm
+  for (i in 1:M) {
+    denom   <- i + sum(R[(M - i + 1):M])
+    v[i]    <- w[i]^(1 / denom)
+  }
+  
+  # Step 3: construct u_i from v_i
+  for (i in 1:M) {
+    u[i] <- 1 - prod(v[(M - i + 1):M])
+  }
+  
+  # Step 4: transform uniforms to Weibull via quantile function
+  x <- qfunc(u, alpha, beta)
+  return(x)
+}
+
+# -------------------------
+# Generate block progressively censored sample
+# -------------------------
+
 smpl_list <- list()
 for(sm in 1:k){
-  smpl_list[[sm]] <- sam_generation_progressive(N[sm],M[sm],alp,bet,R[[sm]]) + (rnorm(M[sm], 0, 0.001))
+  smpl_list[[sm]] <- sam_generation_progressive(qfunc = q_weibull,
+                                                alpha = alp,
+                                                beta  = bet,
+                                                N     = N[sm],
+                                                M     = M[sm],
+                                                R     = R[[sm]]
+  ) + (rnorm(M[sm], 0, 0.001))
 }
 x <- smpl_list; x;
+
 
 gtt <- list()
 for(i in 1:k){
   gtt[[i]] <- x[[i]];#Weibull distribution
-  #gtt[[i]] <- exp(x[[i]])-1;#Modified Weibull distribution
 }
 gtt;
 
 gx <- function(xt){
-  #return(exp(xt)-1)#modified weibull
   return(xt)#weibull
 }
-
-#....... survival function
-sf_func <- function(ap,bt,xt){
-  return(exp(-bt*((gx(xt))^ap)));
-}
-
-
-
-#..... Hazard rate function
-hf_func <- function(ap,bt,xt){
-  #return(ap*bt*((gx(xt))^(ap-1))*exp(xt)); #modified weibull
-  return(ap*bt*((gx(xt))^(ap-1))); #weibull
-}
-
-
-#...Median time to failure
-med_time <- function(ap, bt){
-  return((1/(bt^(1/ap)))*gamma((1/ap)+1)); #Weibull distribution
-}
-
-
 
 ##............. Bisection Method
 bisection <- function(f, a, b, n = 1000, tol = 1e-7) {
@@ -115,34 +121,9 @@ bisection <- function(f, a, b, n = 1000, tol = 1e-7) {
 }
 
 
-
-#...HPD interval using M-H algorithm
-
-HPDIntv <- function(btb){
-  btt <- sort(btb[N0+1:NN]);
-  sim <- los*(NN-N0);
-  simm <- (1-los)*(NN-N0);
-  CI_btt_lwr=CI_btt_upr=CI_btt_lnth=numeric();
-  for(s in 1:sim){
-    CI_btt_lwr[s] <- btt[s];
-    CI_btt_upr[s] <- btt[floor(s+simm)];
-    CI_btt_lnth[s] <- CI_btt_upr[s]-CI_btt_lwr[s];
-  }
-  hpd_intv <- function(lnt_cc, cc_lwr, cc_upr){ ### find the lower and upper bound of the hpd interval
-    BB_index <- min(lnt_cc); 
-    BB_position <- which(c(lnt_cc)== BB_index);
-    BB_int_lwr <- cc_lwr[BB_position[1]];
-    BB_int_upr <- cc_upr[BB_position[1]];
-    return(c(BB_int_lwr, BB_int_upr));	
-  }		
-  hpd_CI_btt <- hpd_intv(CI_btt_lnth,CI_btt_lwr,CI_btt_upr);  # hpd credible interval of parameter 
-  lnt_hpd_lmd <- hpd_CI_btt[2]-hpd_CI_btt[1]; # hpd interval length of parameter
-  return(c(hpd_CI_btt[1],hpd_CI_btt[2],lnt_hpd_lmd));
-}
-
 ##...pivotal based inference
 
-pivotap <- function(aa, bb, rr, gt, mm, nn, xx0){
+PivotalEstimates <- function(aa, bb, rr, gt, mm, nn){
   
   pivalp <- function(ap){ # pivotal function for alpha
     apstr <- mean(rchisq(5,(2*sum(mm+1))));
@@ -170,7 +151,6 @@ pivotap <- function(aa, bb, rr, gt, mm, nn, xx0){
     pp <- piv_alp-apstr;
     return(pp);
   }
-  #pppval <- bisection(pivalp, a=aa, b=bb);
   
   #..pivotal_bet_i
   piv_bti <- function(ap, rr, gt, mm, nn){
@@ -191,7 +171,7 @@ pivotap <- function(aa, bb, rr, gt, mm, nn, xx0){
   pvt_ap <- pvt_bt <- pvt_sf <- pvt_hf <- pvt_mdtf <- numeric();
   pvt_bti <- matrix(0, nrow=NN, ncol=length(M));
   for(ii in 1:NN){
-    pvt_ap_val <- bisection(pivalp, a=aa, b=bb); #pivotap(aa=0.2, bb=2, rr=R, gt=x, mm=M, nn=N );
+    pvt_ap_val <- bisection(pivalp, a=aa, b=bb); 
     pvt_ap[ii] <- pvt_ap_val; #pivotal alpha
     pvt_bti_val <- piv_bti(pvt_ap[ii], rr, gt, mm, nn);
     pvt_bti[ii,] <- pvt_bti_val;#pivotal beta_i
@@ -202,54 +182,22 @@ pivotap <- function(aa, bb, rr, gt, mm, nn, xx0){
       etbti <- etbti + (etinv[i]*(pvt_bti[ii,i]));
     }
     pvt_bt[ii] <- sum(etbti)/sum(etinv); #pivotal beta
-    
-    pvt_sf[ii] <- sf_func(pvt_ap[ii],pvt_bt[ii],xx0); # pivotal SF
-    pvt_hf[ii] <- hf_func(pvt_ap[ii],pvt_bt[ii],xx0); # pivotal HF
-    pvt_mdtf[ii] <- med_time(pvt_ap[ii],pvt_bt[ii]);  #pivotal MDTF
   }
   #pivotal estimates
   pvt_ap_est <- mean(pvt_ap[(N0+1):NN]); #pivt alp
-  pvt_bti_est1 <- mean(pvt_bti[,1][(N0+1):NN]);#pivt bet1
-  pvt_bti_est2 <- mean(pvt_bti[,2][(N0+1):NN]);#pivt bet2
-  pvt_bti_est3 <- mean(pvt_bti[,3][(N0+1):NN]);#pivt bet3
+  pvt_bti_est <- numeric()
+  for(i in 1:k){
+    pvt_bti_est[i] <- mean(pvt_bti[,i][(N0+1):NN]);#pivt beti
+  }
   pvt_bt_est <- mean(pvt_bt[(N0+1):NN]); #pivt bet
-  pvt_sf_est <- mean(pvt_sf[(N0+1):NN]); #pivt sf
-  pvt_hf_est <- mean(pvt_hf[(N0+1):NN]); #pivt hf
-  pvt_mdtf_est <- mean(pvt_mdtf[(N0+1):NN]); #pivt mdtf
   
-  #pivotal variance
-  pvt_ap_vr <- var(pvt_ap[(N0+1):NN]);#variance alp
-  pvt_bti_vr1 <- var(pvt_bti[,1][(N0+1):NN]);#variance bet1
-  pvt_bti_vr2 <- var(pvt_bti[,2][(N0+1):NN]); #var beta2
-  pvt_bti_vr3 <- var(pvt_bti[,3][(N0+1):NN]);#varbet3
-  pvt_bt_vr <- var(pvt_bt[(N0+1):NN]);#var bet
-  pvt_sf_vr <- var(pvt_sf[(N0+1):NN]);#var sf
-  pvt_hf_vr <- var(pvt_hf[(N0+1):NN]);#var hf
-  pvt_mdtf_vr <- var(pvt_mdtf[(N0+1):NN]);#var mdtf
+  pivotal_est <- list()
+  pivotal_est[[1]] <- pvt_ap_est;
+  pivotal_est[[2]] <- pvt_bti_est;
+  pivotal_est[[3]] <- pvt_bt_est;
   
-  #Generalized confidence interval;
-  hpd_ap <- HPDIntv(pvt_ap);#GIC alp
-  hpd_bti1 <- HPDIntv(pvt_bti[,1]);#GIC bet1
-  hpd_bti2 <- HPDIntv(pvt_bti[,2]);#GIC bet2
-  hpd_bti3 <- HPDIntv(pvt_bti[,3]);#GIC bet3
-  hpd_bt <- HPDIntv(pvt_bt);#GIC bet
-  hpd_sf <- HPDIntv(pvt_sf);#GIC sf
-  hpd_hf <- HPDIntv(pvt_hf);#GIC hf
-  hpd_mdtf <- HPDIntv(pvt_mdtf);#GIC mdtf
-  
-  # estimates
-  piv_est <- matrix(0,nrow=k+5, ncol=5);
-  piv_est[1,1] <- pvt_ap_est; piv_est[1,2] <- pvt_ap_vr; piv_est[1,3:5] <- hpd_ap; #alpha
-  piv_est[2,1] <- pvt_bti_est1; piv_est[2,2] <- pvt_bti_vr1; piv_est[2,3:5] <- hpd_bti1;#beta_1
-  piv_est[3,1] <- pvt_bti_est2; piv_est[3,2] <- pvt_bti_vr2; piv_est[3,3:5] <- hpd_bti2;#beta_2
-  piv_est[4,1] <- pvt_bti_est3; piv_est[4,2] <- pvt_bti_vr3; piv_est[4,3:5] <- hpd_bti3;#beta_3
-  piv_est[5,1] <- pvt_bt_est; piv_est[5,2] <- pvt_bt_vr; piv_est[5,3:5] <- hpd_bt;#beta
-  piv_est[6,1] <- pvt_sf_est; piv_est[6,2] <- pvt_sf_vr; piv_est[6,3:5] <- hpd_sf;#SF
-  piv_est[7,1] <- pvt_hf_est; piv_est[7,2] <- pvt_hf_vr; piv_est[7,3:5] <- hpd_hf;#HF
-  piv_est[8,1] <- pvt_mdtf_est; piv_est[8,2] <- pvt_mdtf_vr; piv_est[8,3:5] <- hpd_mdtf;#MDTF
-  return(piv_est);
+  return(pivotal_est)
 }
-pvt_val <- pivotap(aa=1, bb=2, rr=R, gt=x, mm=M, nn=N, xx0=x0);
-cat("Inference based on Pivotal Estimate...\n")
-print(pvt_val)
+pvt_val <- PivotalEstimates(aa=1, bb=2, rr=R, gt=x, mm=M, nn=N);
+pvt_val;
 
