@@ -68,12 +68,13 @@ sam_generation_progressive <- function(qfunc, alpha, beta, N, M, R) {
 
 smpl_list <- list()
 for(sm in 1:k){
-  smpl_list[[sm]] <- sam_generation_progressive(qfunc = q_weibull,
-                                                alpha = alp,
-                                                beta  = bet,
-                                                N     = N[sm],
-                                                M     = M[sm],
-                                                R     = R[[sm]]
+  smpl_list[[sm]] <- sam_generation_progressive(
+    qfunc = q_weibull,
+    alpha = alp,
+    beta  = bet,
+    N     = N[sm],
+    M     = M[sm],
+    R     = R[[sm]]
   ) + (rnorm(M[sm], 0, 0.001))
 }
 x <- smpl_list; x;
@@ -199,5 +200,5 @@ PivotalEstimates <- function(aa, bb, rr, gt, mm, nn){
   return(pivotal_est)
 }
 pvt_val <- PivotalEstimates(aa=1, bb=2, rr=R, gt=x, mm=M, nn=N);
-pvt_val;
+pvt_val
 
